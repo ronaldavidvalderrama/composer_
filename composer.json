@@ -1,0 +1,23 @@
+{
+    "name": "adds/api-basic-slim",
+    "description": "Una API basica de Slim",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ronal David Valderrama Gomez",
+            "email": "189985514+ronaldavidvalderrama@users.noreply.github.com"
+        }
+    ],
+    "require": {
+        "slim/slim": "^4.10",
+        "slim/psr7": "^1.7"
+    }
+}
+
+
