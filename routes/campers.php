@@ -10,6 +10,6 @@ return function(App $app) {
         $group->get('/{documento}', [CamperController::class, 'show']);
         $group->post('', [CamperController::class, 'store']);
         $group->put('/{documento}', [CamperController::class, 'update']);
-        $group->get('/{documento}', [CamperController::class, 'destroy']);
+        $group->delete('/{documento}', [CamperController::class, 'destroy']);
     });
 };
