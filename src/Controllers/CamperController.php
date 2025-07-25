@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Domain\Models\Camper;
 use App\Domain\Repositories\CamperRepositoryInterface;
 use App\UseCases\CreateCamper;
 use App\UseCases\GetAllCampers;
