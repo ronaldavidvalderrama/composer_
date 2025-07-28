@@ -4,7 +4,6 @@ namespace App\Infrastructure\Database;
 
 use Exception;
 use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Database\Capsule\Manager;
 
 class Connection {
     public static function init(): string|bool {
@@ -19,12 +18,15 @@ class Connection {
             'collation' => 'utf8_unicode_ci',
             'prefix' => ''
         ]);
+
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
+        
         try {
             Capsule::connection()->getPdo();
             return true;
-        } catch(Exception $ex) {
+
+        } catch (Exception $ex) {
             return "No se puede conectar con la base de datos: ". $ex->getMessage();
         }
     }

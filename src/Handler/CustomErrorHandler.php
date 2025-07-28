@@ -6,29 +6,34 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Exception\HttpMethodNotAllowedException;
 use Slim\Exception\HttpNotFoundException;
+use Slim\Interfaces\ErrorHandlerInterface;
+use Throwable;
 
-class CustomErrorHandler {
+class CustomErrorHandler implements ErrorHandlerInterface
+{
 
     public function __construct(private ResponseFactoryInterface $response) {}
 
-    public function __invoke(ServerRequestInterface $request, Throwable $exection, bool $dasplayErrorDetail, bool $slogErrors, bool $logErrorDetail, bool $slogErrorDetail): ResponseInterface
-    {
+    public function __invoke(ServerRequestInterface $request, Throwable $exception, bool $displayErrorDetails, bool $logError, bool $logErrorDetails): ResponseInterface {
         $status = 500;
-        $message = "Error interno en e servidor.";
+        $message = "Error interno en el servidor.";
 
-        if ($exection instanceof HttpNotFoundException) {
+        if($exception instanceof HttpNotFoundException) {
             $status = 404;
             $message = "Ruta no encontrada";
-        }elseif ($exection instanceof InvalidArgumentException) {
+        } elseif ($exception instanceof InvalidArgumentException) {
             $status = 422;
-            $message = $exection->getMessage();
+            $message = $exception->getMessage();
+        }  elseif ($exception instanceof HttpMethodNotAllowedException) {
+            $status = 405;
+            $message = "Metodo no permitido";
         }
-
-
 
         $response = $this->response->createResponse($status);
         $response->getBody()->write(json_encode(['error' => $message]));
-        return $response->withHeader('contentt_Type', 'application/json');
+
+        return $response->withHeader('Content-Type', 'application/json');
     }
 }

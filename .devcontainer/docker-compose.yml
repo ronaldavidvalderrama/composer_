@@ -1,8 +1,4 @@
-# Define dos contenedores:
-# app: El que ejecuta PHP.
-# db: El que ejecuta MySQL con la base de datos llamada php_pdo.
-
-services:
+services: 
   app:
     build:
       context: .
