@@ -5,30 +5,36 @@ require_once "vendor/autoload.php";
 use App\Infrastructure\Database\Connection;
 use Slim\Factory\AppFactory;
 use Dotenv\Dotenv;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Slim\Interfaces\ErrorHandlerInterface;
 
+//Variables de .env
+$dotenv = Dotenv::createImmutable(__DIR__ . '/');
+$dotenv->load(); //$_ENV[...]
 
-//variable de .env
-$dotenv = Dotenv::createImmutable(__DIR__. '/');
-$dotenv->load();
-
-//container
+//Se carga el Container de PHP-DI
 $container = require_once 'bootstrap/container.php';
 
-//Aignamos a slim contanedor
+//Asignamos a Slim el contendor
 AppFactory::setContainer($container);
 
 //Iniciar la conexion con la DB
 Connection::init();
 
-
 $app = AppFactory::create();
 
 
+$container->set(ResponseFactoryInterface::class, $app->getResponseFactory());
 
-(require_once 'public/index.php') ($app);
+//definir quien va a manejar los errores....
+$errorHandler = $app->addErrorMiddleware(true,true, true);
+$errorHandler->setDefaultErrorHandler($container->get(ErrorHandlerInterface::class));
 
-
-(require_once 'routes/campers.php') ($app);
-(require_once 'routes/users.php') ($app);
+//Ejecutando los scripts de 
+//public/
+(require_once 'public/index.php')($app);
+//routes/
+(require_once 'routes/campers.php')($app);
+(require_once 'routes/users.php')($app);
 
 $app->run();

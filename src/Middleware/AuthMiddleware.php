@@ -10,41 +10,39 @@ use Slim\Psr7\Response as SlimResponse;
 
 class AuthMiddleware
 {
-    // $repo = new AuthMiddleware() <= ()
-
-    public function __construct()
-    {
-        
-    }
+    // $repo = new AuthMiddleware() <- ()
+    public function __construct() {}
 
     public function __invoke(Request $request, Handler $handler): Response
     {
-        $auth = $request->getHeaderLine('Authorization'); // Basic YW...K0Tkw
+        $auth = $request->getHeaderLine('Authorization'); //Basic YWRyaWFucnVpejFAZ21haWwuY29tOjFhZHJpYW4kOTkw
 
         if (!$auth || !str_starts_with($auth, 'Basic ')) {
             return $this->unauthorized();
         }
 
         $decoded = base64_decode(substr($auth, 6));
-        [$email, $password] = explode(':', $decoded); // ej: adrian@gmail.com:12345
+        [$email, $password] = explode(':', $decoded); //adrian@gmail.com:12345
 
-        // Cambiar al repositorio encargado...
+        //Cambiar al repositorio encargado....
         $user = User::where('email', $email)->first();
 
-        // Validamos contraseña
+        //Validamos contrasena
         if (!$user || !password_verify($password, $user->password)) {
             return $this->unauthorized();
         }
 
         $request = $request->withAttribute('user', $user);
+
         return $handler->handle($request);
     }
+    //$repo = new AuthMiddleware() 
+    //$repo() <- ()
 
     private function unauthorized(): Response
     {
         $response = new SlimResponse();
-        $response->getBody()->write(json_encode(['error' => 'Unauthorized']));
-        return $response->withStatus(401)
-                        ->withHeader('Content-Type', 'application/json');
+        $response->getBody()->write(json_encode(['Error' => 'No autorizado.']));
+        return $response->withStatus(401)->withHeader('Content-Type', 'application/json');
     }
 }

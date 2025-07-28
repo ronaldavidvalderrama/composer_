@@ -9,6 +9,7 @@ use Slim\Psr7\Response as SlimResponse;
 
 class RoleMiddleware
 {
+
     public function __construct(private readonly string $role) {}
 
     public function __invoke(Request $request, Handler $handler): Response
@@ -23,4 +24,4 @@ class RoleMiddleware
 
         return $handler->handle($request);
     }
-}
+}   
